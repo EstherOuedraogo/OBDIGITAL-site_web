@@ -92,7 +92,7 @@
           <li>Ressources et modèles de scripts</li>
           <li>Accès à la communauté des élèves</li>
         </ul>
-        <a href="#inscription" class="btn btn-secondary btn-block">Choisir cette offre</a>
+        <a href="#inscription" class="btn btn-secondary btn-block" onclick="document.getElementById('prog-offre').value='seule';">Choisir cette offre</a>
       </div>
       <div class="price-card featured">
         <span class="price-badge">Recommandé</span>
@@ -105,7 +105,7 @@
           <li>Retours détaillés sur vos productions</li>
           <li>Accompagnement stratégie de contenu</li>
         </ul>
-        <a href="#inscription" class="btn btn-primary btn-block">Choisir cette offre</a>
+        <a href="#inscription" class="btn btn-primary btn-block" onclick="document.getElementById('prog-offre').value='accompagnement';">Choisir cette offre</a>
       </div>
     </div>
   </div>
@@ -124,7 +124,7 @@
         <h3 style="margin-bottom:8px;">Formulaire d'inscription</h3>
         <p style="font-size:0.88rem; margin-bottom:28px;">Content IA Starter — 4 semaines</p>
 
-        <form data-obd-form novalidate data-redirect="merci.html">
+        <form data-obd-form novalidate data-endpoint="/api/programme" data-redirect="merci.html">
           <div class="field">
             <label for="prog-prenom">Prénom</label>
             <input type="text" id="prog-prenom" name="prenom" required autocomplete="given-name">
@@ -137,6 +137,14 @@
             <label for="prog-tel">Téléphone</label>
             <input type="tel" id="prog-tel" name="telephone" required autocomplete="tel">
           </div>
+          <div class="field">
+            <label for="prog-offre">Offre choisie</label>
+            <select id="prog-offre" name="offre" required style="width:100%; background:var(--bg); border:1px solid var(--border); color:var(--white); padding:14px 16px; font-family:var(--font-body); font-size:0.95rem;">
+              <option value="seule">Formation seule — 10 000 MAD</option>
+              <option value="accompagnement">Formation + accompagnement — 15 000 MAD</option>
+            </select>
+          </div>
+          <p class="form-error" style="display:none; color:#e07a6b; font-size:0.85rem; margin-bottom:16px;"></p>
           <button type="submit" class="btn btn-primary btn-block">Procéder au paiement</button>
           <p class="form-note">Vous serez redirigé vers la confirmation, puis contacté pour le règlement.</p>
         </form>

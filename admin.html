@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — OBDIGITAL</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body{ padding-bottom: 80px; }
+  .admin-wrap{ max-width: 1180px; margin: 0 auto; padding: 40px 32px; }
+  .admin-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 40px; flex-wrap:wrap; gap:16px; }
+  .summary-row{ display:grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 46px; }
+  .summary-card{ background: var(--card); border:1px solid var(--border-soft); padding: 24px; }
+  .summary-card .num{ font-family: var(--font-mono); font-size: 1.8rem; color: var(--gold-bright); }
+  .summary-card .lbl{ font-size: 0.82rem; color: var(--gray); margin-top: 6px; }
+  .tabs{ display:flex; gap: 4px; margin-bottom: 26px; border-bottom: 1px solid var(--border-soft); }
+  .tab-btn{ background:none; border:none; color: var(--gray); font-family: var(--font-mono); font-size: 0.85rem; padding: 12px 18px; border-bottom: 2px solid transparent; }
+  .tab-btn.active{ color: var(--gold-bright); border-color: var(--gold); }
+  table{ width:100%; border-collapse: collapse; font-size: 0.86rem; }
+  th, td{ text-align:left; padding: 12px 14px; border-bottom: 1px solid var(--border-soft); white-space: nowrap; }
+  th{ font-family: var(--font-mono); font-size: 0.72rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--gray); }
+  td{ color: var(--white); }
+  tr:hover td{ background: var(--card-hover); }
+  .table-scroll{ overflow-x:auto; border:1px solid var(--border-soft); }
+  select.status-select{ background: var(--bg); color: var(--white); border:1px solid var(--border); padding:6px 8px; font-size:0.8rem; }
+  .gate{ max-width:380px; margin: 100px auto; text-align:center; }
+  .gate input{ width:100%; background: var(--card); border:1px solid var(--border); color:var(--white); padding:14px 16px; margin: 20px 0; text-align:center; }
+  .hidden{ display:none; }
+  .pill{ font-family: var(--font-mono); font-size:0.72rem; padding: 3px 9px; border:1px solid var(--border); color: var(--gray); }
+  .pill.gold{ border-color: var(--gold); color: var(--gold-bright); }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <span class="eyebrow center">Accès protégé</span>
+  <h2>Tableau de bord OBDIGITAL</h2>
+  <p>Entrez la clé admin pour consulter les Leads, Commandes et Témoignages.</p>
+  <input type="password" id="admin-key-input" placeholder="Clé admin (ADMIN_KEY)">
+  <button class="btn btn-primary btn-block" id="admin-key-submit">Accéder au tableau de bord</button>
+  <p class="form-error" id="gate-error" style="display:none; color:#e07a6b; font-size:0.85rem; margin-top:14px;"></p>
+</div>
+
+<div id="dashboard" class="admin-wrap hidden">
+  <div class="admin-top">
+    <div>
+      <span class="eyebrow">Tableau de bord</span>
+      <h2>OBDIGITAL — Administration</h2>
+    </div>
+    <a href="index.html" class="btn btn-secondary">← Retour au site</a>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card"><div class="num" id="sum-leads">—</div><div class="lbl">Leads total</div></div>
+    <div class="summary-card"><div class="num" id="sum-commandes">—</div><div class="lbl">Commandes total</div></div>
+    <div class="summary-card"><div class="num" id="sum-revenu">—</div><div class="lbl">Revenu confirmé (MAD)</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="leads">Leads</button>
+    <button class="tab-btn" data-tab="commandes">Commandes</button>
+    <button class="tab-btn" data-tab="temoignages">Témoignages</button>
+  </div>
+
+  <div id="tab-leads" class="tab-panel">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Prénom</th><th>Email</th><th>Téléphone</th><th>Type</th><th>Message</th><th>Statut</th><th>Date</th></tr></thead>
+        <tbody id="leads-body"><tr><td colspan="8">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-commandes" class="tab-panel hidden">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Prénom</th><th>Email</th><th>Téléphone</th><th>Offre</th><th>Montant (MAD)</th><th>Paiement</th><th>Date</th></tr></thead>
+        <tbody id="commandes-body"><tr><td colspan="8">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-temoignages" class="tab-panel hidden">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Nom</th><th>Texte</th><th>Résultat</th><th>Publié</th></tr></thead>
+        <tbody id="temoignages-body"><tr><td colspan="5">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+let ADMIN_KEY = '';
+
+function api(path, opts = {}) {
+  return fetch(path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY, ...(opts.headers || {}) }
+  }).then(async r => {
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Erreur API');
+    return r.json();
+  });
+}
+
+document.getElementById('admin-key-submit').addEventListener('click', async () => {
+  const key = document.getElementById('admin-key-input').value.trim();
+  const errBox = document.getElementById('gate-error');
+  errBox.style.display = 'none';
+  if (!key) return;
+  ADMIN_KEY = key;
+  try {
+    await api('/api/admin/summary'); // validates the key
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    loadAll();
+  } catch (e) {
+    errBox.textContent = 'Clé invalide.';
+    errBox.style.display = 'block';
+    ADMIN_KEY = '';
+  }
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+  });
+});
+
+async function loadAll() {
+  const summary = await api('/api/admin/summary');
+  document.getElementById('sum-leads').textContent = summary.leads;
+  document.getElementById('sum-commandes').textContent = summary.commandes;
+  document.getElementById('sum-revenu').textContent = summary.revenu.toLocaleString('fr-FR');
+
+  const leads = await api('/api/admin/leads');
+  document.getElementById('leads-body').innerHTML = leads.map(l => `
+    <tr>
+      <td>${l.id}</td><td>${esc(l.prenom)}</td><td>${esc(l.email)}</td><td>${esc(l.telephone || '—')}</td>
+      <td><span class="pill">${esc(l.type_inscription)}</span></td>
+      <td style="max-width:220px; white-space:normal;">${esc(l.message || '—')}</td>
+      <td>
+        <select class="status-select" data-id="${l.id}" data-kind="lead">
+          ${['nouveau','contacte','converti','perdu'].map(s => `<option value="${s}" ${s===l.statut?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>${esc(l.date_creation)}</td>
+    </tr>`).join('') || '<tr><td colspan="8">Aucun lead pour le moment.</td></tr>';
+
+  const commandes = await api('/api/admin/commandes');
+  document.getElementById('commandes-body').innerHTML = commandes.map(c => `
+    <tr>
+      <td>${c.id}</td><td>${esc(c.prenom)}</td><td>${esc(c.email)}</td><td>${esc(c.telephone || '—')}</td>
+      <td><span class="pill gold">${esc(c.offre)}</span></td><td>${c.montant.toLocaleString('fr-FR')}</td>
+      <td>
+        <select class="status-select" data-id="${c.id}" data-kind="commande">
+          ${['en_attente','payee','annulee'].map(s => `<option value="${s}" ${s===c.statut_paiement?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>${esc(c.date_creation)}</td>
+    </tr>`).join('') || '<tr><td colspan="8">Aucune commande pour le moment.</td></tr>';
+
+  const temoignages = await api('/api/admin/temoignages');
+  document.getElementById('temoignages-body').innerHTML = temoignages.map(t => `
+    <tr>
+      <td>${t.id}</td><td>${esc(t.nom)}</td>
+      <td style="max-width:280px; white-space:normal;">${esc(t.texte)}</td>
+      <td>${esc(t.resultat || '—')}</td>
+      <td>
+        <select class="status-select" data-id="${t.id}" data-kind="temoignage">
+          <option value="1" ${t.publie ? 'selected' : ''}>publié</option>
+          <option value="0" ${!t.publie ? 'selected' : ''}>masqué</option>
+        </select>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5">Aucun témoignage.</td></tr>';
+
+  document.querySelectorAll('.status-select').forEach(sel => {
+    sel.addEventListener('change', async () => {
+      const { id, kind } = sel.dataset;
+      try {
+        if (kind === 'lead') await api(`/api/admin/leads/${id}`, { method: 'PATCH', body: JSON.stringify({ statut: sel.value }) });
+        if (kind === 'commande') await api(`/api/admin/commandes/${id}`, { method: 'PATCH', body: JSON.stringify({ statut_paiement: sel.value }) });
+        if (kind === 'temoignage') await api(`/api/admin/temoignages/${id}`, { method: 'PATCH', body: JSON.stringify({ publie: sel.value === '1' }) });
+        loadAll();
+      } catch (e) { alert('Erreur lors de la mise à jour.'); }
+    });
+  });
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

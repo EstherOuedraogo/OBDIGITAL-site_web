@@ -70,7 +70,7 @@
         <h3 style="margin-bottom:8px;">Je réserve ma place</h3>
         <p style="font-size:0.88rem; margin-bottom:28px;">Places limitées à chaque session. Confirmation immédiate par email.</p>
 
-        <form data-obd-form novalidate>
+        <form data-obd-form novalidate data-endpoint="/api/masterclass">
           <div class="field">
             <label for="mc-prenom">Prénom</label>
             <input type="text" id="mc-prenom" name="prenom" required autocomplete="given-name">
@@ -83,6 +83,7 @@
             <label for="mc-tel">Téléphone</label>
             <input type="tel" id="mc-tel" name="telephone" required autocomplete="tel">
           </div>
+          <p class="form-error" style="display:none; color:#e07a6b; font-size:0.85rem; margin-bottom:16px;"></p>
           <button type="submit" class="btn btn-primary btn-block">Je réserve ma place</button>
           <p class="form-note">Aucune carte bancaire requise. Session 100% gratuite.</p>
         </form>

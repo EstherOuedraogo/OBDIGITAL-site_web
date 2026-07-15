@@ -13,26 +13,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
   }
 
-  // ---------- Render-grid signature generator ----------
-  document.querySelectorAll('.render-grid').forEach(grid => {
-    const cols = 24, rows = 10;
-    const total = cols * rows;
-    const litCount = Math.floor(total * 0.09);
-    const litIndices = new Set();
-    while (litIndices.size < litCount) {
-      litIndices.add(Math.floor(Math.random() * total));
+  // ---------- Scroll reveal: groups fade in/out together ----------
+  const groups = document.querySelectorAll('.reveal-group');
+  if (groups.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+    groups.forEach(g => io.observe(g));
+  } else {
+    groups.forEach(g => g.classList.add('in-view'));
+  }
+
+  // ---------- Animated stat counters (play once, when visible) ----------
+  const statNumbers = document.querySelectorAll('.stat-number');
+  if (statNumbers.length && 'IntersectionObserver' in window) {
+    const counterIO = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animateCount(entry.target);
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.6 });
+    statNumbers.forEach(el => counterIO.observe(el));
+  }
+
+  function animateCount(el) {
+    const raw = el.textContent.trim();
+    const match = raw.match(/([+-]?)([\d\s]+)(.*)/);
+    if (!match) return;
+    const sign = match[1] || '';
+    const digits = parseInt(match[2].replace(/\s/g, ''), 10);
+    const suffix = match[3] || '';
+    if (isNaN(digits)) return;
+
+    const duration = 1200;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(digits * eased);
+      el.textContent = sign + current.toLocaleString('fr-FR') + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = raw;
     }
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < total; i++) {
-      const cell = document.createElement('span');
-      if (litIndices.has(i)) {
-        cell.classList.add('lit');
-        cell.style.setProperty('--d', (Math.random() * 3.6).toFixed(2));
-      }
-      frag.appendChild(cell);
-    }
-    grid.appendChild(frag);
-  });
+    requestAnimationFrame(tick);
+  }
 
   // ---------- Forms (submit to real backend API) ----------
   document.querySelectorAll('form[data-obd-form]').forEach(form => {

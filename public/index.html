@@ -28,18 +28,37 @@
 
 <section class="hero">
   <div class="render-grid" aria-hidden="true"></div>
+  <canvas class="particles" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="hero-inner">
-      <span class="eyebrow">Formation IA · Contenu vidéo</span>
-      <h1>Créez du contenu professionnel grâce à <em>l'Intelligence Artificielle</em></h1>
-      <p class="lede">OBDIGITAL forme les débutants à créer des vidéos percutantes avec l'IA — sans expérience en montage, sans équipe, sans budget de production.</p>
-      <div class="hero-ctas">
-        <a href="masterclass.html" class="btn btn-primary">Rejoindre la Masterclass Gratuite</a>
-        <a href="services.html" class="btn btn-secondary">Découvrir nos services</a>
+    <div class="hero-grid">
+      <div class="hero-inner">
+        <span class="eyebrow">Formation IA · Contenu vidéo</span>
+        <h1 data-split>Créez du contenu professionnel grâce à <em>l'Intelligence Artificielle</em></h1>
+        <p class="lede">OBDIGITAL forme les débutants à créer des vidéos percutantes avec l'IA — sans expérience en montage, sans équipe, sans budget de production.</p>
+        <div class="hero-ctas">
+          <a href="masterclass.html" class="btn btn-primary btn-magnetic">Rejoindre la Masterclass Gratuite</a>
+          <a href="services.html" class="btn btn-secondary">Découvrir nos services</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-visual-frame">
+          <img src="assets/showcase/pop-art-portrait.jpg" alt="Création IA — portrait artistique pop art réalisé par OBDIGITAL" loading="eager">
+        </div>
+        <div class="hero-visual-tag">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 14.5 9 22 9.5 16.5 14 18 21.5 12 17.5 6 21.5 7.5 14 2 9.5 9.5 9z"/></svg>
+          Généré par IA
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<div class="sticky-cta" id="stickyCta">
+  <div class="wrap sticky-cta-inner">
+    <span>Prêt·e à créer avec l'IA ?</span>
+    <a href="masterclass.html" class="btn btn-primary btn-sm">Rejoindre la Masterclass Gratuite</a>
+  </div>
+</div>
 
 <section class="stats">
   <div class="wrap">
@@ -130,7 +149,63 @@
   </div>
 </section>
 
-<section>
+<section class="showcase-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Ce que l'IA rend possible</span>
+      <h2>Des réalisations qui donnent envie de créer</h2>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="showcase-grid reveal-group">
+      <article class="showcase-card">
+        <img src="assets/showcase/pixar-portrait.jpg" alt="Portrait transformé en personnage 3D façon Pixar par l'IA">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Portrait → Personnage 3D</span>
+          <p class="showcase-prompt">"Transforme cette photo en personnage 3D façon Pixar, en gardant les traits du visage, avec de grands yeux expressifs et un rendu chaleureux."</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/showcase/bighead-effect.jpg" alt="Montage IA créatif effet grosse tête" loading="lazy">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Montage créatif surréaliste</span>
+          <p class="showcase-prompt">Effet "grosse tête" stylisé — composition surréaliste et montage soigné entièrement généré par IA à partir d'une photo simple.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/showcase/king-mirror.jpg" alt="Portrait style carte à jouer avec effet miroir" loading="lazy">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Portrait "Roi" — effet miroir</span>
+          <p class="showcase-prompt">Mise en scène premium façon carte à jouer, reflet parfait et éclairage studio — un rendu digne d'un shooting professionnel, généré par IA.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/showcase/chips-photoshoot.jpg" alt="Photoshoot créatif dans un paquet de chips géant généré par IA" loading="lazy">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Photoshoot créatif décalé</span>
+          <p class="showcase-prompt">Mise en scène surréaliste et humoristique — composition détaillée, lumière naturelle crédible, entièrement générée par IA à partir d'une photo simple.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/showcase/pop-art-portrait.jpg" alt="Portrait artistique façon mosaïque pop art générée par IA" loading="lazy">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Portrait pop art géométrique</span>
+          <p class="showcase-prompt">Style artistique audacieux, textures façon mosaïque colorée et relief 3D — une identité visuelle forte générée entièrement par IA.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/showcase/studio-obdigital.jpg" alt="Mise en scène studio de podcast à la marque OBDIGITAL générée par IA" loading="lazy">
+        <div class="showcase-overlay">
+          <span class="showcase-label">Studio de marque, généré par IA</span>
+          <p class="showcase-prompt">Mise en scène studio professionnelle avec identité visuelle intégrée — idéal pour se projeter avant même d'avoir le matériel.</p>
+        </div>
+      </article>
+    </div>
+    <p class="showcase-note">Chaque semaine, de nouvelles créations viennent enrichir cette galerie — la tienne pourrait y être.</p>
+  </div>
+</section>
+
+<section class="section-alt">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Résultats</span>
@@ -144,20 +219,22 @@
           <span class="from">Notre chaîne TikTok</span>
           <span class="to">+3 000 abonnés</span>
         </div>
-        <div class="growth-compare">
-          <figure class="growth-shot">
-            <img src="assets/results/avant-5000.jpg" alt="Profil TikTok OBDIGITAL à 5 000 abonnés" loading="lazy">
-            <figcaption>Avant</figcaption>
-          </figure>
-          <div class="growth-arrow">→</div>
-          <figure class="growth-shot">
+        <div class="compare-slider" data-compare>
+          <div class="compare-after">
             <img src="assets/results/apres-8000.jpg" alt="Profil TikTok OBDIGITAL à 8 000 abonnés" loading="lazy">
-            <figcaption>Après</figcaption>
-          </figure>
+            <span class="compare-tag tag-after">8 000</span>
+          </div>
+          <div class="compare-before">
+            <img src="assets/results/avant-5000.jpg" alt="Profil TikTok OBDIGITAL à 5 000 abonnés" loading="lazy">
+            <span class="compare-tag tag-before">5 000</span>
+          </div>
+          <div class="compare-handle">
+            <span class="compare-grip">↔</span>
+          </div>
         </div>
         <div class="growth-caption">
-          <span>5 000 → 8 000 abonnés</span>
-          <span>en quelques semaines</span>
+          <span>👆 Glisse pour comparer</span>
+          <span>+3 000 abonnés</span>
         </div>
       </div>
       <div class="results-gallery">

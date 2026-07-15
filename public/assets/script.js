@@ -13,6 +13,137 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
   }
 
+  // ---------- Hero title: split into words for staggered reveal ----------
+  document.querySelectorAll('[data-split]').forEach(el => {
+    const walk = (node) => {
+      node.childNodes.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          const parts = child.textContent.split(/(\s+)/);
+          parts.forEach((part, i) => {
+            if (part.trim() === '') { frag.appendChild(document.createTextNode(part)); return; }
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = part;
+            span.style.animationDelay = (0.08 * wordIndex++) + 's';
+            frag.appendChild(span);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          walk(child);
+        }
+      });
+    };
+    let wordIndex = 0;
+    walk(el);
+  });
+
+  // ---------- Ambient hero particles ----------
+  document.querySelectorAll('.particles').forEach(canvas => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    let w, h, particles;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      w = canvas.width = rect.width;
+      h = canvas.height = rect.height;
+    }
+    function init() {
+      const count = Math.min(46, Math.floor((w * h) / 26000));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.6 + 0.6,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -Math.random() * 0.18 - 0.04,
+        a: Math.random() * 0.5 + 0.15
+      }));
+    }
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.y < -4) { p.y = h + 4; p.x = Math.random() * w; }
+        if (p.x < -4) p.x = w + 4;
+        if (p.x > w + 4) p.x = -4;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232,200,126,${p.a})`;
+        ctx.fill();
+      });
+      if (!reduceMotion) requestAnimationFrame(tick);
+    }
+    resize();
+    init();
+    if (!reduceMotion) requestAnimationFrame(tick);
+    else tick();
+    window.addEventListener('resize', () => { resize(); init(); });
+  });
+
+  // ---------- Magnetic button (follows cursor slightly) ----------
+  document.querySelectorAll('.btn-magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.18}px, ${y * 0.35}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+
+  // ---------- Sticky CTA bar (appears after scrolling past hero) ----------
+  const stickyCta = document.getElementById('stickyCta');
+  const heroEl = document.querySelector('.hero');
+  if (stickyCta && heroEl) {
+    const onScroll = () => {
+      const past = window.scrollY > heroEl.offsetHeight * 0.9;
+      stickyCta.classList.toggle('visible', past);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // ---------- Interactive before/after compare slider ----------
+  document.querySelectorAll('[data-compare]').forEach(slider => {
+    const before = slider.querySelector('.compare-before');
+    const handle = slider.querySelector('.compare-handle');
+    const beforeImg = before.querySelector('img');
+
+    function setPos(pct) {
+      pct = Math.max(4, Math.min(96, pct));
+      before.style.width = pct + '%';
+      handle.style.left = pct + '%';
+      beforeImg.style.width = (slider.offsetWidth) + 'px';
+    }
+    function posFromEvent(e) {
+      const rect = slider.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+    let dragging = false;
+    slider.addEventListener('mousedown', (e) => { dragging = true; setPos(posFromEvent(e)); });
+    window.addEventListener('mousemove', (e) => { if (dragging) setPos(posFromEvent(e)); });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    slider.addEventListener('touchstart', (e) => { dragging = true; setPos(posFromEvent(e)); }, { passive: true });
+    slider.addEventListener('touchmove', (e) => { if (dragging) setPos(posFromEvent(e)); }, { passive: true });
+    slider.addEventListener('touchend', () => { dragging = false; });
+    window.addEventListener('resize', () => setPos(parseFloat(before.style.width) || 50));
+    setPos(50);
+  });
+
+  // ---------- Subtle 3D tilt on result/testimonial cards ----------
+  document.querySelectorAll('.results-gallery figure, .testi-card, .showcase-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(600px) rotateX(${-py * 8}deg) rotateY(${px * 8}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
   // ---------- Scroll reveal: groups fade in/out together ----------
   const groups = document.querySelectorAll('.reveal-group');
   if (groups.length && 'IntersectionObserver' in window) {

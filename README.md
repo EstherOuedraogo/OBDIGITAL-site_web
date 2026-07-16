@@ -2,7 +2,7 @@
 
 Ce projet contient le site OBDIGITAL complet **avec un vrai backend** :
 - Serveur **Node.js / Express**
-- Base de données **SQLite** (fichier `data/obdigital.db`, créé automatiquement)
+- Base de données **PostgreSQL** (connexion via la variable d'environnement `DATABASE_URL`)
 - 3 tables réelles : `leads`, `commandes`, `temoignages`
 - Un tableau de bord admin (`/admin.html`) pour consulter et gérer les données
 
@@ -14,7 +14,12 @@ npm install
 cp .env.example .env
 ```
 
-Ouvrez `.env` et changez `ADMIN_KEY` pour une valeur secrète à vous (c'est le mot de passe du tableau de bord admin).
+Ouvrez `.env` et :
+- changez `ADMIN_KEY` pour une valeur secrète à vous (c'est le mot de passe du tableau de bord admin)
+- renseignez `DATABASE_URL` avec l'URL de connexion de votre base PostgreSQL, au format :
+  `postgresql://utilisateur:motdepasse@hote:5432/nom_de_la_base`
+
+Vous avez besoin d'une base PostgreSQL accessible (locale via Docker/Postgres.app, ou hébergée comme Render, Supabase, Neon, Railway...). Les tables sont créées automatiquement au démarrage du serveur.
 
 ## 2. Lancer le site en local
 

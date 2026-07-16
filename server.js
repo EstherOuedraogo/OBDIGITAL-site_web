@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { pool, initDb } = require('./db');
+const { notifyNewLead } = require('./mailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +48,7 @@ app.post('/api/masterclass', asyncRoute(async (req, res) => {
     `INSERT INTO leads (prenom, email, telephone, type_inscription) VALUES ($1, $2, $3, 'masterclass') RETURNING id`,
     [prenom.trim(), email.trim().toLowerCase(), telephone.trim()]
   );
+  notifyNewLead({ type: 'masterclass', prenom: prenom.trim(), email: email.trim().toLowerCase(), telephone: telephone.trim() });
   res.status(201).json({ ok: true, id: rows[0].id });
 }));
 
@@ -76,6 +78,14 @@ app.post('/api/programme', asyncRoute(async (req, res) => {
     const commandeId = cmdResult.rows[0].id;
 
     await client.query('COMMIT');
+    notifyNewLead({
+      type: 'programme',
+      prenom: prenom.trim(),
+      email: email.trim().toLowerCase(),
+      telephone: telephone.trim(),
+      offre: offreChoisie,
+      montant
+    });
     res.status(201).json({ ok: true, leadId, commandeId, montant });
   } catch (err) {
     await client.query('ROLLBACK');
@@ -95,6 +105,7 @@ app.post('/api/contact', asyncRoute(async (req, res) => {
     `INSERT INTO leads (prenom, email, telephone, type_inscription, message) VALUES ($1, $2, '', 'contact', $3) RETURNING id`,
     [prenom.trim(), email.trim().toLowerCase(), message.trim()]
   );
+  notifyNewLead({ type: 'contact', prenom: prenom.trim(), email: email.trim().toLowerCase(), message: message.trim() });
   res.status(201).json({ ok: true, id: rows[0].id });
 }));
 

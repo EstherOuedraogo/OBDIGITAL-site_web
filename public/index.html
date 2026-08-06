@@ -223,52 +223,69 @@
   </div>
 </section>
 
-<section class="section-alt">
+<section class="section-alt results-section">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Résultats</span>
       <h2>La preuve que la méthode fonctionne</h2>
     </div>
   </div>
+
   <div class="wrap">
-    <div class="results-layout reveal-group">
-      <div class="growth-card">
-        <div class="growth-head">
-          <span class="from">Notre chaîne TikTok</span>
-          <span class="to">+3 000 abonnés</span>
+    <div class="reveal-group">
+      <div class="evolution-card">
+        <div class="evolution-head">
+          <span class="evolution-label">Notre chaîne TikTok</span>
+          <div class="evolution-count" id="evolutionCount">10 000</div>
+          <span class="evolution-sub">abonnés et toujours en croissance</span>
         </div>
-        <div class="compare-slider" data-compare>
-          <div class="compare-after">
-            <img src="assets/results/apres-8000.jpg" alt="Profil TikTok OBDIGITAL à 8 000 abonnés" loading="lazy">
-            <span class="compare-tag tag-after">8 000</span>
-          </div>
-          <div class="compare-before">
+
+        <div class="evolution-display">
+          <div class="evolution-shot" data-shot="5000">
             <img src="assets/results/avant-5000.jpg" alt="Profil TikTok OBDIGITAL à 5 000 abonnés" loading="lazy">
-            <span class="compare-tag tag-before">5 000</span>
           </div>
-          <div class="compare-handle">
-            <span class="compare-grip">↔</span>
+          <div class="evolution-shot" data-shot="8000">
+            <img src="assets/results/apres-8000.jpg" alt="Profil TikTok OBDIGITAL à 8 000 abonnés" loading="lazy">
+          </div>
+          <div class="evolution-shot active" data-shot="10000">
+            <img src="assets/results/dix-mille-10000.jpg" alt="Profil TikTok OBDIGITAL à 10 000 abonnés" loading="lazy">
           </div>
         </div>
-        <div class="growth-caption">
-          <span>👆 Glisse pour comparer</span>
-          <span>+3 000 abonnés</span>
+
+        <div class="evolution-track">
+          <button type="button" class="evolution-step passed" data-step="5000">
+            <span class="evolution-dot"></span>
+            <span class="evolution-step-label">5 000</span>
+          </button>
+          <div class="evolution-progress" id="evolutionProgress"></div>
+          <button type="button" class="evolution-step passed" data-step="8000">
+            <span class="evolution-dot"></span>
+            <span class="evolution-step-label">8 000</span>
+          </button>
+          <button type="button" class="evolution-step active" data-step="10000">
+            <span class="evolution-dot"></span>
+            <span class="evolution-step-label">10 000</span>
+          </button>
         </div>
+        <p class="evolution-caption">👆 Clique sur une étape pour revoir l'évolution</p>
       </div>
-      <div class="results-gallery">
-        <figure>
-          <img src="assets/results/chat-eleve1.jpg" alt="Accompagnement vocal d'un élève OBDIGITAL bloqué sur ChatGPT" loading="lazy">
-          <figcaption>Accompagnement d'un élève</figcaption>
-        </figure>
-        <figure>
-          <img src="assets/results/progression-7000.jpg" alt="Profil TikTok OBDIGITAL à 7 000 abonnés, étape intermédiaire" loading="lazy">
-          <figcaption>Étape intermédiaire — 7 000</figcaption>
-        </figure>
-        <figure>
-          <img src="assets/results/chat-eleve2.jpg" alt="Conseil personnalisé donné à un élève OBDIGITAL" loading="lazy">
-          <figcaption>Suivi personnalisé</figcaption>
-        </figure>
-      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="results-gallery reveal-group">
+      <figure>
+        <img src="assets/results/chat-eleve1.jpg" alt="Accompagnement vocal d'un élève OBDIGITAL bloqué sur ChatGPT" loading="lazy">
+        <figcaption>Accompagnement d'un élève</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/results/progression-7000.jpg" alt="Profil TikTok OBDIGITAL à 7 000 abonnés, étape intermédiaire" loading="lazy">
+        <figcaption>Étape intermédiaire — 7 000</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/results/chat-eleve2.jpg" alt="Conseil personnalisé donné à un élève OBDIGITAL" loading="lazy">
+        <figcaption>Suivi personnalisé</figcaption>
+      </figure>
     </div>
   </div>
 </section>
